@@ -91,8 +91,16 @@ window.onload = function() {
 		//.beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
 		//.ending(1355774400000)
 		//.showTimeAxisTick() // toggles tick marks
-		//.stack() // toggles graph stacking
-		//.margin({left:70, right:30, top:0, bottom:0})
+		.margin({left:30, right:30, top:20, bottom:20})
+		.rotateTicks(45)
+		.tickFormat({
+			// format: d3.time.format("%d/%m %a"),
+			// tickTime: d3.time.days,
+			format: d3.time.format("%H:%M"),
+			tickTime: d3.time.hours,
+			tickInterval: 1,
+			tickSize: 2
+		})
 		;
 	d3.select("#chart").datum(TestData).call(chart)
 		;

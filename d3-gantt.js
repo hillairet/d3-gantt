@@ -27,7 +27,7 @@
 		beginning = 0,
 		labelMargin = 0,
 		ending = 0,
-		margin = {left: 10, right:10, top: 30, bottom:10},
+		margin = {left: 20, right:20, top: 20, bottom:20},
 		stacked = false,
 		rotateTicks = false,
 		itemHeight = 60,
@@ -45,19 +45,6 @@
 		chartData = {},
 		axisDelay = 500
 		;
-
-//		beginning = 1355702800000;
-//		ending = 1355861910000;
-		rotateTicks = 45;
-		tickFormat = {
-			// format: d3.time.format("%d/%m %a"),
-			// tickTime: d3.time.days,
-			format: d3.time.format("%H:%M"),
-			tickTime: d3.time.hours,
-			tickInterval: 1,
-			tickSize: 2
-		};
-
 
 		function find_xrange(data){
 			// figure out beginning and ending times if they are unspecified
