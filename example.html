@@ -1,25 +1,25 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<head>
-  <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
-  <script src="d3-gantt.js"></script>
+	<head>
+		<script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+		<script src="d3-gantt.js"></script>
 
-  <style type="text/css">
-	html {
-		height: 100%;
-	}
+		<style type="text/css">
+html {
+	height: 100%;
+}
 	body {
 		margin:0;
 		padding:0;
 		height: 100%;
 	}
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: black;
-      shape-rendering: crispEdges;
-    }
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
 
 	#base {
 		width: 100%;
@@ -35,93 +35,95 @@
 		height: 90%;
 	}
 
-    .axis text {
-      font-family: sans-serif;
-      font-size: 10px;
-    }
+	.axis text {
+		font-family: sans-serif;
+		font-size: 10px;
+	}
 
-    .timeline-label {
-      font-family: sans-serif;
-      font-size: 12px;
-    }
+	.timeline-label {
+		font-family: sans-serif;
+		font-size: 12px;
+	}
 
-  </style>
-</head>
-<body>
-  <script type="text/javascript">
-    window.onload = function() {
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+window.onload = function() {
 
-      var TestData = [
-        {class:"step1", label: "Step1", times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000, "category": "cat1"}, 
-          {"starting_time": 1355767900000, "ending_time": 1355774400000, "category": "cat2"}]},
-        {class:"step2", label: "Step2", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat2",
-          "display":"circle"}, ]},
-        {class:"step3", label: "Step3", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat3",
-          "display":"circle"}, ]},
-        {class:"step4", label: "Step4", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat3",
-          "display":"circle"}, ]},
-        {class:"step5", label: "Step5", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat1",
-          "display":"circle"}, ]},
-        {class:"step6", label: "Step6", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
-        {class:"step7", label: "Step7", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat3"}]},
-        {class:"step8", label: "Step8", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat1"}]},
-        {class:"step9", label: "Step9", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat3"}]},
-        {class:"step10", label: "Step10", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
-        {class:"step11", label: "Step11", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
-        {class:"step12", label: "Step12", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat1"}]},
-        {class:"step13", label: "Step13", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]}
-      ];
+	var now = Date.now();
+	var TestData = [
+	{class:"step1", label: "Step1", times: [
+		{"starting_time": (now-10000000), "ending_time": (now-5000000), "category": "cat1"}, 
+		{"starting_time": (now +5000000), "ending_time": (now+19000000), "category": "cat2"}]},
+	{class:"step2", label: "Step2", times: [
+		{"starting_time": (now-1000000), "ending_time": (now+10000000), "category": "cat2",
+			"display":"circle"}, ]},
+	{class:"step3", label: "Step3", times: [
+		{"starting_time": (now+1000000), "ending_time": (now+15000000), "category": "cat3",
+			"display":"circle"}, ]},
+	{class:"step4", label: "Step4", times: [
+		{"starting_time": (now+14000000), "ending_time": (now+17000000), "category": "cat3",
+			"display":"circle"}, ]},
+	{class:"step5", label: "Step5", times: [
+		{"starting_time": (now+11000000), "ending_time": (now+18000000), "category": "cat1",
+			"display":"circle"}, ]},
+	{class:"step6", label: "Step6", times: [
+		{"starting_time": (now-16000000), "ending_time": (now+0), "category": "cat2"}]},
+	{class:"step7", label: "Step7", times: [
+		{"starting_time": (now+19000000), "ending_time": (now+22000000), "category": "cat3"}]},
+	{class:"step8", label: "Step8", times: [
+		{"starting_time": (now-5000000), "ending_time": (now+1000000), "category": "cat1"}]},
+	{class:"step9", label: "Step9", times: [
+		{"starting_time": (now-7000000), "ending_time": (now+4000000), "category": "cat3"}]},
+	{class:"step10", label: "Step10", times: [
+		{"starting_time": (now+0), "ending_time": (now+7000000), "category": "cat2"}]},
+	{class:"step11", label: "Step11", times: [
+		{"starting_time": (now+4000000), "ending_time": (now+8000000), "category": "cat2"}]},
+	{class:"step12", label: "Step12", times: [
+		{"starting_time": (now+8000000), "ending_time": (now+11000000), "category": "cat1"}]},
+	{class:"step13", label: "Step13", times: [
+		{"starting_time": (now+9000000), "ending_time": (now+13000000), "category": "cat2"}]}
+	];
 
-	  var chart = d3.gantt()
-		  .colorProperty('category');
-	  d3.select("#chart").datum(TestData).call(chart);
-//          .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
-//          .ending(1355774400000)
-//          .showTimeAxisTick() // toggles tick marks
-//          .stack() // toggles graph stacking
-//          .margin({left:70, right:30, top:0, bottom:0})
-//          ;
+	var chart = d3.gantt()
+		.colorProperty('category')
+		//.beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
+		//.ending(1355774400000)
+		//.showTimeAxisTick() // toggles tick marks
+		//.stack() // toggles graph stacking
+		//.margin({left:70, right:30, top:0, bottom:0})
+		;
+	d3.select("#chart").datum(TestData).call(chart)
+		;
 
-	  var showData2 = function(){
+	var showData2 = function(){
 		var data2 = [];
 		data2.push(TestData[0]);
 		data2.push(TestData[2]);
 		chart.draw(data2)
-	  }
+	}
 
-	  d3.select("#data2")
-		  .on("click", showData2);
+	d3.select("#data2")
+		.on("click", showData2);
 
-	  var reset = function(){
+	var reset = function(){
 		chart.draw(TestData)
-	  }
+	}
 
-	  d3.select("#reset")
-		  .on("click", reset);
+	d3.select("#reset")
+		.on("click", reset);
 
-    }
-  </script>
-  <div id="base">
-    <div id="header">
-    <h4>What a great looking Gantt chart !</h4>
-	<button id="data2">Use data 2</button>
-	<button id="reset">Reset Data</button>
-	</div>
-    <div id="chart"></div>
-  </div>
+}
+		</script>
+		<div id="base">
+			<div id="header">
+				<h4>What a great looking Gantt chart !</h4>
+				<button id="data2">Use data 2</button>
+				<button id="reset">Reset Data</button>
+			</div>
+			<div id="chart"></div>
+		</div>
 
-</body>
+	</body>
 </html>
