@@ -57,7 +57,6 @@
 			tickInterval: 1,
 			tickSize: 2
 		};
-		// colorPropertyName = 'category',
 
 
 		function find_xrange(data){
@@ -116,7 +115,7 @@
 
 
 		///////////////////////////////////////////////////////////////////
-		function draw(data, init = false){
+		gantt.draw = function(data, init = false){
 			var svg = d3.select("svg");
 			svgbb = svg.node().getBBox();
 
@@ -174,7 +173,7 @@
 			}
 
 			if(!init){
-				// Update the axes to their correct position and
+				// Update the axes to their correct position
 				var gyabb = gyAxis.node().getBBox();
 				yScale = make_yaxis(labels,gyabb.height);
 				yAxis = d3.svg.axis()
@@ -208,9 +207,11 @@
 				xtransY = (gyabb.width+margin.left);
 				
 				gxAxis.transition().duration(axisDelay)
+					.delay(axisDelay)
 					.attr("transform", "translate(" + 0 + "," + ytransX + ")");
 
 				gyAxis.transition().duration(axisDelay)
+					.delay(axisDelay)
 					.attr("transform", "translate(" + xtransY + ',' + 0 + ")");
 
 				cpwidth = width - margin.right - xtransY;
@@ -350,20 +351,10 @@
 			find_xrange(data);
 
 			// Create X and Y axes
-			draw(data,true);
+			gantt.draw(data,true);
 
 			// Draw everything
-			draw(data);
-
-			data2 = [];
-			data2.push(data[0]);
-			data2.push(data[2]);
-
-			d3.select("#data2")
-				.on("click", function(d,i) {
-					draw(data2)
-				})   
-
+			gantt.draw(data);
 
 		}
 		// SETTINGS

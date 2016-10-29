@@ -85,24 +85,39 @@
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
       ];
 
-      function testfunc() {
-        var chart = d3.gantt();
-		d3.select("#chart").datum(TestData).call(chart);
+	  var chart = d3.gantt();
+	  d3.select("#chart").datum(TestData).call(chart);
 //          .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
 //          .ending(1355774400000)
 //          .showTimeAxisTick() // toggles tick marks
 //          .stack() // toggles graph stacking
 //          .margin({left:70, right:30, top:0, bottom:0})
 //          ;
-      }
 
-      testfunc();
+	  var showData2 = function(){
+		var data2 = [];
+		data2.push(TestData[0]);
+		data2.push(TestData[2]);
+		chart.draw(data2)
+	  }
+
+	  d3.select("#data2")
+		  .on("click", showData2);
+
+	  var reset = function(){
+		chart.draw(TestData)
+	  }
+
+	  d3.select("#reset")
+		  .on("click", reset);
+
     }
   </script>
   <div id="base">
     <div id="header">
-    <h4>We can also use icons</h4>
-	<button id="data2">Set Data to data 2</button>
+    <h4>What a great looking Gantt chart !</h4>
+	<button id="data2">Use data 2</button>
+	<button id="reset">Reset Data</button>
 	</div>
     <div id="chart"></div>
   </div>
