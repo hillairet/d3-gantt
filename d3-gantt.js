@@ -113,6 +113,20 @@
 			return yScale;
 		}
 
+		///////////////////////////////////////////////////////////////////
+		function color_selector(d,i){
+			var dColorPropName;
+			if (d.color) return d.color;
+			if( colorPropertyName ){
+				dColorPropName = d[colorPropertyName];
+				if ( dColorPropName ) {
+					return colorCycle( dColorPropName );
+				} else {
+					return colorCycle(i);
+				}
+			}
+			return colorCycle(i);
+		}
 
 		///////////////////////////////////////////////////////////////////
 		gantt.draw = function(data, init = false){
@@ -230,6 +244,7 @@
 						rect.width = xAxis.scale()(time.ending_time) - xAxis.scale()(time.starting_time);
 						rect.id = entry.label;
 						rectdata.push(rect);
+						rect.color = color_selector(time, rectdata.length);
 					});
 				});
 
@@ -238,19 +253,7 @@
 					.data(rectdata)
 
 				//update
-				bars.style("fill", function(d, i){
-					  var dColorPropName;
-					  if (d.color) return d.color;
-					  if( colorPropertyName ){
-						dColorPropName = d[colorPropertyName];
-						if ( dColorPropName ) {
-						  return colorCycle( dColorPropName );
-						} else {
-						  return colorCycle( datum[colorPropertyName] );
-						}
-					  }
-					  return colorCycle(i);
-					});
+				bars.style("fill", function(d,i){return d.color;});
 
 				//enter
 				bars.enter()
@@ -260,19 +263,7 @@
 					.attr("transform", function(d,i) {
 						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
 					})
-					.style("fill", function(d, i){
-					  var dColorPropName;
-					  if (d.color) return d.color;
-					  if( colorPropertyName ){
-						dColorPropName = d[colorPropertyName];
-						if ( dColorPropName ) {
-						  return colorCycle( dColorPropName );
-						} else {
-						  return colorCycle( datum[colorPropertyName] );
-						}
-					  }
-					  return colorCycle(i);
-					});
+					.style("fill", function(d,i){return d.color;});
 
 				//exit 
 				bars.exit()

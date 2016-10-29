@@ -53,39 +53,40 @@
 
       var TestData = [
         {class:"step1", label: "Step1", times: [
-          {"starting_time": 1355752800000, "ending_time": 1355759900000}, 
-          {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
+          {"starting_time": 1355752800000, "ending_time": 1355759900000, "category": "cat1"}, 
+          {"starting_time": 1355767900000, "ending_time": 1355774400000, "category": "cat2"}]},
         {class:"step2", label: "Step2", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000,
+          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat2",
           "display":"circle"}, ]},
         {class:"step3", label: "Step3", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000,
+          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat3",
           "display":"circle"}, ]},
         {class:"step4", label: "Step4", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000,
+          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat3",
           "display":"circle"}, ]},
         {class:"step5", label: "Step5", times: [
-          {"starting_time": 1355759910000, "ending_time": 1355761900000,
+          {"starting_time": 1355759910000, "ending_time": 1355761900000, "category": "cat1",
           "display":"circle"}, ]},
         {class:"step6", label: "Step6", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
         {class:"step7", label: "Step7", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat3"}]},
         {class:"step8", label: "Step8", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat1"}]},
         {class:"step9", label: "Step9", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat3"}]},
         {class:"step10", label: "Step10", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
         {class:"step11", label: "Step11", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]},
         {class:"step12", label: "Step12", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat1"}]},
         {class:"step13", label: "Step13", times: [
-          {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
+          {"starting_time": 1355761910000, "ending_time": 1355763910000, "category": "cat2"}]}
       ];
 
-	  var chart = d3.gantt();
+	  var chart = d3.gantt()
+		  .colorProperty('category');
 	  d3.select("#chart").datum(TestData).call(chart);
 //          .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
 //          .ending(1355774400000)
