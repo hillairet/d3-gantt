@@ -65,17 +65,18 @@
 				var minTime = 0,
 				maxTime = 0;
 				data.forEach(function (entry, i) {
-					time = entry.times[0];
-					if (i === 0){
-						minTime = time.starting_time;
-						maxTime = time.starting_time;
-					}
-					if(beginning === 0)
-						if (time.starting_time < minTime )
+					entry.times.forEach(function (time, j) {
+						if (minTime === 0){
 							minTime = time.starting_time;
-					if(ending === 0)
-						if (time.ending_time > maxTime)
-							maxTime = time.ending_time;
+							maxTime = time.starting_time;
+						}
+						if(beginning === 0)
+							if (time.starting_time < minTime )
+								minTime = time.starting_time;
+						if(ending === 0)
+							if (time.ending_time > maxTime)
+								maxTime = time.ending_time;
+					});
 				});
 				if ( beginning === 0)
 					beginning = minTime;
