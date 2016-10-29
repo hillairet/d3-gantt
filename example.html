@@ -51,51 +51,49 @@
   <script type="text/javascript">
     window.onload = function() {
 
-      var iconTestData = [
-        {class:"jackie", label: "jackie.png", times: [
+      var TestData = [
+        {class:"step1", label: "Step1", times: [
           {"starting_time": 1355752800000, "ending_time": 1355759900000}, 
           {"starting_time": 1355767900000, "ending_time": 1355774400000}]},
-        {class:"troll", label: "troll.png", times: [
+        {class:"step2", label: "Step2", times: [
           {"starting_time": 1355759910000, "ending_time": 1355761900000,
           "display":"circle"}, ]},
-        {class:"troll", label: "troll1.png", times: [
+        {class:"step3", label: "Step3", times: [
           {"starting_time": 1355759910000, "ending_time": 1355761900000,
           "display":"circle"}, ]},
-        {class:"troll", label: "troll2.png", times: [
+        {class:"step4", label: "Step4", times: [
           {"starting_time": 1355759910000, "ending_time": 1355761900000,
           "display":"circle"}, ]},
-        {class:"troll", label: "troll3.png", times: [
+        {class:"step5", label: "Step5", times: [
           {"starting_time": 1355759910000, "ending_time": 1355761900000,
           "display":"circle"}, ]},
-        {class:"wat", label: "wat.png", times: [
+        {class:"step6", label: "Step6", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat2.png", times: [
+        {class:"step7", label: "Step7", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat3.png", times: [
+        {class:"step8", label: "Step8", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat4.png", times: [
+        {class:"step9", label: "Step9", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat5.png", times: [
+        {class:"step10", label: "Step10", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat6.png", times: [
+        {class:"step11", label: "Step11", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "wat7.png", times: [
+        {class:"step12", label: "Step12", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]},
-        {class:"wat", label: "watalahooooo8.png", times: [
+        {class:"step13", label: "Step13", times: [
           {"starting_time": 1355761910000, "ending_time": 1355763910000}]}
       ];
 
       function testfunc() {
         var chart = d3.gantt();
-		d3.select("#chart").datum(iconTestData).call(chart);
+		d3.select("#chart").datum(TestData).call(chart);
 //          .beginning(1355752800000) // we can optionally add beginning and ending times to speed up rendering a little
 //          .ending(1355774400000)
 //          .showTimeAxisTick() // toggles tick marks
 //          .stack() // toggles graph stacking
 //          .margin({left:70, right:30, top:0, bottom:0})
 //          ;
-//        var svg = d3.select("#timeline5").append("svg").attr("width", width)
-//          .datum(iconTestData).call(chart);
       }
 
       testfunc();
