@@ -39,7 +39,7 @@
 		showTodayLine = false,
 		timeAxisTick = false,
 		timeAxisTickFormat = {stroke: "stroke-dasharray", spacing: "4 10"},
-		showTodayFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
+		showTodayFormat = {marginTop: 25, marginBottom: 0, width: 2, color: "#FF0000"},
 		showBorderFormat = {marginTop: 25, marginBottom: 0, width: 1, color: colorCycle},
 		showAxisCalendarYear = false,
 		axisBgColor = "white",
@@ -54,7 +54,9 @@
 		yAxis,
 		gyAxis,
 		chart,
-		clipper;
+		chartdeco,
+		clipper,
+		todayLine;
 
 		function find_xrange(data){
 			// figure out beginning and ending times if they are unspecified
@@ -167,6 +169,20 @@
 				clipper.append("rect")
 					.attr("width",width)
 					.attr("height",height);
+
+				chartdeco = svg.append("g")
+					.attr("class","chartdeco")
+					.attr("clip-path","url(#clip-chart)");
+				if (showTodayLine) {
+					var today = xScale(new Date());
+					todayLine = chartdeco.append("line")
+						.attr("x1", today)
+						.attr("y1", 0)
+						.attr("x2", today)
+						.attr("y2", 0)
+						.style("stroke", showTodayFormat.color)//"rgb(6,120,155)")
+						.style("stroke-width", showTodayFormat.width);
+				}
 			}
 
 
@@ -304,6 +320,18 @@
 					.on("zoom", pan);
 
 				svg.call(panYOnScrollAndDrag);
+
+				if (showTodayLine) {
+					var today = xScale(new Date());
+					todayLine.transition()
+						.duration(2*axisDelay)
+						.delay(axisDelay)
+						.attr("x1", today)
+						.attr("y1", yScale.rangeExtent()[0])
+						.attr("x2", today)
+						.attr("y2", yScale.rangeExtent()[1]);
+				}
+
 			}
 
 		}
