@@ -1,5 +1,6 @@
 (function () {
 	d3.gantt = function() {
+		////////////// Setting variables ///////////////
 		var DISPLAY_TYPES = ["circle", "rect"];
 
 		var hover = function () {},
@@ -46,6 +47,15 @@
 		axisDelay = 500
 		;
 
+		////////////// Selection variables ///////////////
+		var svg,
+		xAxis,
+		gxAxis,
+		yAxis,
+		gyAxis,
+		chart,
+		clipper;
+
 		function find_xrange(data){
 			// figure out beginning and ending times if they are unspecified
 			if ( ending === 0 || beginning === 0) {
@@ -73,28 +83,17 @@
 		}
 
 		///////////////////////////////////////////////////////////////////
-		function make_xaxis(x,xwdt){
+		function make_xscale(x,xwdt){
 			var xScale = d3.time.scale()
 				.domain([beginning, ending])
 				.range([x, xwdt]);
 
-			var xAxis = d3.svg.axis()
-				.scale(xScale)
-				.orient(orient)
-				.tickFormat(tickFormat.format)
-				.tickSize(tickFormat.tickSize);
-
-			if (tickFormat.tickValues != null) {
-				xAxis.tickValues(tickFormat.tickValues);
-			} else {
-				xAxis.ticks(tickFormat.numTicks || tickFormat.tickTime, tickFormat.tickInterval);
-			}
-			return xAxis;
+			return xScale;
 		}
 
 
 		///////////////////////////////////////////////////////////////////
-		function make_yaxis(lbls, yhgt){
+		function make_yscale(lbls, yhgt){
 			var yScale = d3.scale.ordinal()
 				.domain(lbls)
 				.rangeBands([margin.top, yhgt]);
@@ -118,50 +117,56 @@
 
 		///////////////////////////////////////////////////////////////////
 		gantt.draw = function(data, init = false){
-			var svg = d3.select("svg");
 			svgbb = svg.node().getBBox();
 
-			// X axis
-			xAxis = make_xaxis(0,width+10);
-			
-			// Y axis
 			var labels = [];
 			data.forEach(function(entry,i){
 				labels.push(entry.label);
 			});
 
-			yheight = Math.max((labels.length * itemHeight), (height+10));
-			yScale = make_yaxis(labels,yheight);
-			var yAxis = d3.svg.axis()
-				.scale(yScale)
-				.orient("left")
-				.tickSize(2);
-
 			if (init){
-				var gxAxis = svg.append("g")
+				// X axis
+				xScale = make_xscale(0,width+10);
+				
+				xAxis = d3.svg.axis()
+					.scale(xScale)
+					.orient(orient)
+					.tickFormat(tickFormat.format)
+					.tickSize(tickFormat.tickSize);
+
+				if (tickFormat.tickValues != null) {
+					xAxis.tickValues(tickFormat.tickValues);
+				} else {
+					xAxis.ticks(tickFormat.numTicks || tickFormat.tickTime, tickFormat.tickInterval);
+				}
+				gxAxis = svg.append("g")
 					.attr("class", "xaxis")
 					.attr("transform", "translate(" + (-10) + "," + (height+10) + ")")
 					.call(xAxis);
-				var gyAxis = svg.append("g")
+
+				// Y axis
+				yheight = Math.max((labels.length * itemHeight), (height+10));
+				yScale = make_yscale(labels,yheight);
+
+				yAxis = d3.svg.axis()
+					.scale(yScale)
+					.orient("left")
+					.tickSize(2);
+				gyAxis = svg.append("g")
 					.attr("clip-path","url(#clip-chart)")
 					.append('g')
 					.attr("class", "yaxis")
 					.attr("transform", "translate(" + (-10) + "," + 0 + ")")
 					.call(yAxis);
 
-				var chart = svg.append("g")
+				chart = svg.append("g")
 					.attr("class","chart")
 					.attr("clip-path","url(#clip-chart)");
-				var cp = svg.append("clipPath")
+				clipper = svg.append("clipPath")
 					.attr("id","clip-chart");
-				cp.append("rect")
+				clipper.append("rect")
 					.attr("width",width)
 					.attr("height",height);
-			} else {
-				var gxAxis = d3.select("g.xaxis");
-				var gyAxis = d3.select("g.yaxis");
-				var chart = d3.select("g.chart");
-				var cp = d3.select("clipPath");
 			}
 
 
@@ -177,17 +182,15 @@
 			if(!init){
 				// Update the axes to their correct position
 				var gyabb = gyAxis.node().getBBox();
-				yScale = make_yaxis(labels,gyabb.height);
-				yAxis = d3.svg.axis()
-				.scale(yScale)
-				.orient("left")
-				.tickSize(2);
+				yScale = make_yscale(labels,gyabb.height);
+				yAxis.scale(yScale);
 				gyAxis.call(yAxis);
 				gyabb = gyAxis.node().getBBox();
 
 				xpos = gyabb.width + margin.left;
 				xwidth = width - xpos - margin.right;
-				xAxis = make_xaxis(xpos,xwidth);
+				xScale = make_xscale(xpos,xwidth);
+				xAxis.scale(xScale);
 				gxAxis.transition()
 					.duration(axisDelay)
 					.call(xAxis);
@@ -196,7 +199,7 @@
 				yheight = Math.max(
 						(labels.length * itemHeight),
 						(height-gxabb.height-margin.bottom));
-				yScale = make_yaxis(labels,yheight);
+				yScale = make_yscale(labels,yheight);
 				yAxis = d3.svg.axis()
 				.scale(yScale)
 				.orient("left")
@@ -218,7 +221,7 @@
 
 				cpwidth = width - margin.right - xtransY;
 				cpheight = ytransX - margin.top;
-				cp.select("rect")
+				clipper.select("rect")
 					.attr("height",cpheight)
 					.attr("width", width)
 					.attr("x",0)
@@ -277,7 +280,7 @@
 					var deltaY = 0.0;
 					var yStart = d3.transform(gyAxis.attr("transform")).translate[1];
 					var fullHeight = gyAxis.node().getBBox().height;
-					var visibleHeight = cp.node().getBBox().height;
+					var visibleHeight = clipper.node().getBBox().height;
 					// scroll(yScale(y), yScale);
 					if (d3.event.sourceEvent.type === "wheel") {
 						// use the `d3.event.sourceEvent.deltaY` value to translate
@@ -308,7 +311,7 @@
 		function gantt(gParent)
 		{
 			//setup the svg
-			var svg = gParent.append("svg")
+			svg = gParent.append("svg")
 				.attr("width", "100%")
 				.attr("height", "100%");
 			svg.append("svg:rect")
@@ -317,7 +320,6 @@
 				.attr("stroke", "#000")
 				.attr("fill", "none");
 
-			var svg = d3.select("svg");
 			svgbb = svg.node().getBBox();
 			width = svgbb.width;
 			height = svgbb.height;
