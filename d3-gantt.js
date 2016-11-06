@@ -215,6 +215,16 @@
 						.data([true])
 						.enter().append('g')
 						.attr('class','legend_items');
+
+					// Set mouse cursor to drag hand 
+					legend.on({
+						      "mouseover": function(d) {
+								          d3.select(this).style("cursor", "-webkit-grab")
+								        },
+						      "mouseout": function(d) {
+								          d3.select(this).style("cursor", "")
+								        }
+						    });
 				}
 			}
 
