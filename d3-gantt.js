@@ -44,7 +44,9 @@
 		showAxisCalendarYear = false,
 		axisBgColor = "white",
 		chartData = {},
-		axisDelay = 500
+		axisDelay = 500,
+		legendRectSize = 18,
+		legendSpacing = 4
 		;
 
 		////////////// Selection variables ///////////////
@@ -56,7 +58,9 @@
 		chart,
 		chartdeco,
 		clipper,
-		todayLine;
+		todayLine,
+		legend,
+		legend_items;
 
 		function find_xrange(data){
 			// figure out beginning and ending times if they are unspecified
@@ -127,6 +131,7 @@
 			});
 
 			if (init){
+				/////////////////////////////
 				// X axis
 				xScale = make_xscale(0,width+10);
 				
@@ -146,6 +151,7 @@
 					.attr("transform", "translate(" + (-10) + "," + (height+10) + ")")
 					.call(xAxis);
 
+				/////////////////////////////
 				// Y axis
 				yheight = Math.max((labels.length * itemHeight), (height+10));
 				yScale = make_yscale(labels,yheight);
@@ -161,6 +167,8 @@
 					.attr("transform", "translate(" + (-10) + "," + 0 + ")")
 					.call(yAxis);
 
+				/////////////////////////////
+				// Chart and clip chart
 				chart = svg.append("g")
 					.attr("class","chart")
 					.attr("clip-path","url(#clip-chart)");
@@ -170,6 +178,8 @@
 					.attr("width",width)
 					.attr("height",height);
 
+				/////////////////////////////
+				// Chart decorations (Today line ...)
 				chartdeco = svg.append("g")
 					.attr("class","chartdeco")
 					.attr("clip-path","url(#clip-chart)");
@@ -182,6 +192,29 @@
 						.attr("y2", 0)
 						.style("stroke", showTodayFormat.color)//"rgb(6,120,155)")
 						.style("stroke-width", showTodayFormat.width);
+				}
+
+				/////////////////////////////
+				// Legend
+				if ( colorPropertyName ) {
+					legend = svg.append('g')
+						.attr('id','legend')
+						.attr('transform', function(){
+							posx = svg.node().getBBox().width * 4/5;
+							return 'translate('+posx+',25)';
+						});
+
+
+					legend.append('rect')
+						.attr('width', 0)
+						.attr('height', 0)
+						.style('fill', 'white')
+						.style('stroke', 'black');
+
+					legend_items = legend.selectAll('legend_items')
+						.data([true])
+						.enter().append('g')
+						.attr('class','legend_items');
 				}
 			}
 
@@ -243,6 +276,8 @@
 					.attr("x",0)
 					.attr("y",margin.top);
 
+				////////////////////////////////////
+				// Extract rect data
 				var rectdata = [];
 				data.forEach(function (entry, i) {
 					entry.times.forEach(function (time, j) {
@@ -255,6 +290,7 @@
 					});
 				});
 
+				////////////////////////////////////
 				// Draw the bar chart
 				var bars = chart.selectAll("rect.bar")
 					.data(rectdata)
@@ -292,6 +328,8 @@
 						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
 					});
 
+				////////////////////////////////////
+				// Pan Y on scroll
 				var pan = function() {
 					var deltaY = 0.0;
 					var yStart = d3.transform(gyAxis.attr("transform")).translate[1];
@@ -321,6 +359,8 @@
 
 				svg.call(panYOnScrollAndDrag);
 
+				////////////////////////////////////
+				// Draw today line
 				if (showTodayLine) {
 					var today = xScale(new Date());
 					todayLine.transition()
@@ -330,6 +370,56 @@
 						.attr("y1", yScale.rangeExtent()[0])
 						.attr("x2", today)
 						.attr("y2", yScale.rangeExtent()[1]);
+				}
+
+				////////////////////////////////////
+				// Draw legend
+				if ( colorPropertyName ) {
+					var legend_entry = legend_items.selectAll('legend_entry')
+						.data(colorCycle.domain())
+						.enter()
+						.append('g')
+						.attr('class', 'legend_entry')
+						.attr('transform', function(d, i) {
+							var height = legendRectSize + legendSpacing;
+							var offset =  height * colorCycle.domain().length / 2;
+							var horz = 10;
+							var vert = i * height + 10; // - offset;
+							return 'translate(' + horz + ',' + vert + ')';
+						});
+					legend_entry.append('rect')
+						.attr('width', legendRectSize)
+						.attr('height', legendRectSize)
+						.style('fill', colorCycle)
+						.style('stroke', colorCycle);
+					legend_entry.append('text')
+						.attr('x', legendRectSize + legendSpacing)
+						.attr('y', legendRectSize - legendSpacing)
+						.text(function(d) { return d; });
+					// To make the width of the main box fit the text width
+					// https://bl.ocks.org/mbostock/1160929
+					var lbbox = legend_items.node().getBBox();
+					var therect = legend.select('rect')
+						.attr('width',lbbox.width + 20)
+						.attr('height',lbbox.height + 20);
+
+					// Set up dragging for the entire legend
+					var dragMove = function () {
+						var x = d3.event.x;
+						var y = d3.event.y;
+						d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+					};
+
+					var drag = d3.behavior.drag()
+						.origin(function () {
+							return {
+								x: d3.transform(legend.attr("transform")).translate[0],
+								y: d3.transform(legend.attr("transform")).translate[1]
+							};
+						})
+						.on("drag", dragMove);
+
+					legend.call(drag);
 				}
 
 			}
