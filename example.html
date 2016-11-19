@@ -54,10 +54,10 @@ window.onload = function() {
 	var now = Date.now();
 	var TestData = [
 	{class:"step1", label: "Step1", times: [
-		{"starting_time": (now-10000000), "ending_time": (now-5000000), "category": "cat1"}, 
-		{"starting_time": (now +5000000), "ending_time": (now+19000000), "category": "cat2"}]},
+		{"starting_time": (now-10000000), "ending_time": (now-5000000), "category": "cat1", "label": "Test1.1"}, 
+		{"starting_time": (now +5000000), "ending_time": (now+19000000), "category": "cat2", "label": "Test1.2"}]},
 	{class:"step2", label: "Step2", times: [
-		{"starting_time": (now-1000000), "ending_time": (now+10000000), "category": "cat2",
+		{"starting_time": (now-1000000), "ending_time": (now+10000000), "category": "cat2", "label": "Test2",
 			"display":"circle"}, ]},
 	{class:"step3", label: "Step3", times: [
 		{"starting_time": (now+1000000), "ending_time": (now+15000000), "category": "cat3",
@@ -73,7 +73,7 @@ window.onload = function() {
 	{class:"step7", label: "Step7", times: [
 		{"starting_time": (now+19000000), "ending_time": (now+22000000), "category": "cat3"}]},
 	{class:"step8", label: "Step8", times: [
-		{"starting_time": (now-5000000), "ending_time": (now+1000000), "category": "cat1"}]},
+		{"starting_time": (now-5000000), "ending_time": (now+1000000), "category": "cat1", "label": "Test8"}]},
 	{class:"step9", label: "Step9", times: [
 		{"starting_time": (now-7000000), "ending_time": (now+4000000), "category": "cat3"}]},
 	{class:"step10", label: "Step10", times: [
@@ -83,7 +83,7 @@ window.onload = function() {
 	{class:"step12", label: "Step12", times: [
 		{"starting_time": (now+8000000), "ending_time": (now+11000000), "category": "cat1"}]},
 	{class:"step13", label: "Step13", times: [
-		{"starting_time": (now+9000000), "ending_time": (now+13000000), "category": "cat2"}]}
+		{"starting_time": (now+9000000), "ending_time": (now+13000000), "category": "cat2", "label": "Test13"}]}
 	];
 
 	var chart = d3.gantt()

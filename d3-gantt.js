@@ -295,14 +295,18 @@
 						rect.x = xAxis.scale()(time.starting_time);
 						rect.width = xAxis.scale()(time.ending_time) - xAxis.scale()(time.starting_time);
 						rect.id = entry.label;
-						rectdata.push(rect);
 						rect.color = color_selector(time, rectdata.length);
+						rect.text = time.label;
+
+						rectdata.push(rect);
 					});
 				});
 
 				////////////////////////////////////
 				// Draw the bar chart
 				var bars = chart.selectAll("rect.bar")
+					.data(rectdata)
+				var texts = chart.selectAll("text.bar-text")
 					.data(rectdata)
 
 				//update
@@ -317,9 +321,28 @@
 						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
 					})
 					.style("fill", function(d,i){return d.color;});
+				texts.enter()
+					.append("text")
+					.attr("class", "bar-text")
+					.attr("alignment-baseline","middle")
+					.attr("x", 5)
+					.attr("y", yAxis.scale().rangeBand()/2)
+					.attr("transform", function(d,i) {
+						// return "translate(" + d.x +',0)';
+						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
+					})
+					.attr("fill-opacity", 0.0)
+					.text(function(d){return d.text;});
 
 				//exit 
 				bars.exit()
+				.transition()
+				.duration(axisDelay)
+				.ease("exp")
+					.attr("width", 0)
+					.remove();
+
+				texts.exit()
 				.transition()
 				.duration(axisDelay)
 				.ease("exp")
@@ -334,6 +357,16 @@
 					.ease("quad")
 					.attr("width", function(d,i){ return d.width; })
 					.attr("height", yAxis.scale().rangeBand())
+					.attr("transform", function(d,i) {
+						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
+					});
+
+				texts.transition()
+					.delay(500)
+					.duration(axisDelay)
+					.ease("quad")
+					.attr("fill-opacity", 1.0)
+					.attr("y", yAxis.scale().rangeBand()/2)
 					.attr("transform", function(d,i) {
 						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
 					});
