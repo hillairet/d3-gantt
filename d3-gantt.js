@@ -112,6 +112,9 @@
 			if (d.color) return d.color;
 			if( colorPropertyName ){
 				dColorPropName = d[colorPropertyName];
+				if (dColorPropName === undefined) {
+					return "#FFFFFF";
+				}
 				if ( dColorPropName ) {
 					return colorCycle( dColorPropName );
 				} else {
@@ -291,14 +294,19 @@
 				var rectdata = [];
 				data.forEach(function (entry, i) {
 					entry.times.forEach(function (time, j) {
-						var rect = {};
-						rect.x = xAxis.scale()(time.starting_time);
-						rect.width = xAxis.scale()(time.ending_time) - xAxis.scale()(time.starting_time);
-						rect.id = entry.label;
-						rect.color = color_selector(time, rectdata.length);
-						rect.text = time.label;
+						if (time.display == "circle" || 
+							time.ending_time === undefined || time.starting_time === undefined){
+							// circle
+						} else {
+							var rect = {};
+							rect.x = xAxis.scale()(time.starting_time);
+							rect.width = xAxis.scale()(time.ending_time) - xAxis.scale()(time.starting_time);
+							rect.id = entry.label;
+							rect.color = color_selector(entry, rectdata.length);
+							rect.text = time.label;
 
-						rectdata.push(rect);
+							rectdata.push(rect);
+						}
 					});
 				});
 
