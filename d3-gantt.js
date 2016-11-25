@@ -203,7 +203,7 @@
 					legend = svg.append('g')
 						.attr('id','legend')
 						.attr('transform', function(){
-							posx = svg.node().getBBox().width * 4/5;
+							posx = width * 4/5;
 							return 'translate('+posx+',25)';
 						});
 
@@ -250,7 +250,7 @@
 				gyabb = gyAxis.node().getBBox();
 
 				xpos = gyabb.width + margin.left;
-				xwidth = width - xpos - margin.right;
+				xwidth = width - margin.right;
 				xScale = make_xscale(xpos,xwidth);
 				xAxis.scale(xScale);
 				gxAxis.transition()
@@ -486,7 +486,7 @@
 			svg.append("svg:rect")
 				.attr("width", "100%")
 				.attr("height", "100%")
-				.attr("stroke", "#000")
+				.attr("stroke", "none")
 				.attr("fill", "none");
 
 			svgbb = svg.node().getBBox();
