@@ -67,11 +67,11 @@ window.onload = function() {
 		{"starting_time": (now-10000000), "ending_time": (now-5000000), "label": "Test1.1"}, 
 		{"starting_time": (now +5000000), "ending_time": (now+19000000), "label": "Test1.2"}]},
 	{class:"class1", label: "Step2", "category": "cat2", times: [
-		{"starting_time": (now-1000000), "ending_time": (now+10000000), "label": "Test2",
-			"display":"circle"}, ]},
-	{class:"class2", label: "Step3", "category": "cat3", times: [
-		{"starting_time": (now+100000), "ending_time": (now+1500000),
-			"display":"circle"}, ]},
+		{"starting_time": (now-1000000), "ending_time": (now+10000000), "label": "Test2" }, ],
+		show_split: true,
+		subentries: [{class:"class2", label: "Step3", "category": "cat3", times: [
+				{"starting_time": (now+100000), "ending_time": (now+1500000) }, ]}]
+	},
 	{class:"class2", label: "Step4", "category": "cat3", times: [
 		{"starting_time": (now+14000000), "ending_time": (now+17000000),
 			"display":"circle"}, ]},
@@ -133,6 +133,36 @@ window.onload = function() {
 	d3.select("#reset")
 		.on("click", reset);
 
+	var on_off_split = function(){
+		tmpData = [];
+		counttrue = 0;
+		countfalse = 0;
+		// Are all the show split in the same state ?
+		TestData.forEach(function(d,i){
+			if (d.show_split !== undefined)
+				if (d.show_split) {
+					counttrue += 1;
+				} else {
+					countfalse += 1;
+				}
+		});
+		new_show = true;
+		// Hide them all if most are shown
+		if (counttrue > countfalse)
+			new_show = false;
+
+		TestData.forEach(function(d,i){
+			cpd = d;
+			if (d.show_split !== undefined)
+				cpd.show_split = new_show;
+			tmpData.push(cpd);
+		});
+		chart.draw(tmpData);
+	}
+
+	d3.select("#on_off_split")
+		.on("click", on_off_split);
+
 }
 		</script>
 		<div id="base">
@@ -140,6 +170,7 @@ window.onload = function() {
 				<h4>What a great looking Gantt chart !</h4>
 				<button id="data2">Use data 2</button>
 				<button id="reset">Reset Data</button>
+				<button id="on_off_split">On/Off Split</button>
 			</div>
 			<div id="chart"></div>
 		</div>

@@ -129,9 +129,21 @@
 		gantt.draw = function(data, init = false){
 			svgbb = svg.node().getBBox();
 
+			var flatdata = [];
 			var labels = [];
 			data.forEach(function(entry,i){
 				labels.push(entry.label);
+				flatdata.push(entry);
+				show = true;
+				if (entry.show_split !== undefined)
+					show = entry.show_split;
+				if (entry.subentries !== undefined){
+					entry.subentries.forEach(function(subentry,j){
+						flatdata.push(subentry);
+						if (show)
+							labels.push(subentry.label);
+					});
+				}
 			});
 
 			if (init){
@@ -252,7 +264,7 @@
 				// Apply the style before extracting the box width
 				// to take into account the font.
 				gyAxis.selectAll(".tick text")
-					.data(data)
+					.data(flatdata)
 					.attr("class", function(d){
 						if (d.class == null)
 							return "ylabel_default";
@@ -312,14 +324,16 @@
 				// Extract rect data
 				var rectdata = [];
 				data.forEach(function (entry, i) {
+						console.log(entry.label)
 					entry.times.forEach(function (time, j) {
 						if (time.display == "circle" || 
 							time.ending_time === undefined || time.starting_time === undefined){
-							// circle
+							// TODO: circle
 						} else {
 							var rect = {};
 							rect.x = xAxis.scale()(time.starting_time);
-							rect.width = xAxis.scale()(time.ending_time) - xAxis.scale()(time.starting_time);
+							rect.width = xAxis.scale()(time.ending_time)
+										- xAxis.scale()(time.starting_time);
 							rect.id = entry.label;
 							rect.color = color_selector(entry, rectdata.length);
 							rect.text = time.label;
@@ -327,6 +341,34 @@
 							rectdata.push(rect);
 						}
 					});
+					if (entry.subentries !== undefined){
+						entry.subentries.forEach(function(subentry,k){
+							console.log(subentry.label)
+							subentry.times.forEach(function (subtime, l) {
+								if (subtime.display == "circle" || 
+									subtime.ending_time === undefined || subtime.starting_time === undefined){
+									// TODO: circle
+								} else {
+									var rect = {};
+									rect.x = xAxis.scale()(subtime.starting_time);
+									rect.width = xAxis.scale()(subtime.ending_time)
+												- xAxis.scale()(subtime.starting_time);
+									rect.color = color_selector(subentry, rectdata.length);
+									rect.text = subtime.label;
+
+									show = true;
+									if (entry.show_split !== undefined)
+										show = entry.show_split;
+									if (show){
+										rect.id = subentry.label;
+									} else {
+										rect.id = entry.label;
+									}
+									rectdata.push(rect);
+								}
+							});
+						});
+					}
 				});
 
 				////////////////////////////////////
