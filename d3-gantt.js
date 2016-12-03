@@ -248,6 +248,18 @@
 				yScale = make_yscale(labels,gyabb.height);
 				yAxis.scale(yScale);
 				gyAxis.call(yAxis);
+
+				// Apply the style before extracting the box width
+				// to take into account the font.
+				gyAxis.selectAll(".tick text")
+					.data(data)
+					.attr("class", function(d){
+						if (d.class == null)
+							return "ylabel_default";
+						else
+							return "ylabel_"+d.class;
+					});
+
 				gyabb = gyAxis.node().getBBox();
 
 				xpos = gyabb.width + margin.left;
@@ -287,15 +299,6 @@
 						.style("text-anchor","start") // Left aligned
 						;
 				}
-				gyAxis.selectAll(".tick text")
-					.data(data)
-					.attr("class", function(d){
-						if (d.class == null)
-							return "ylabel_default";
-						else
-							return "ylabel_"+d.class;
-					})
-					;
 
 				cpwidth = width - margin.right - xtransY;
 				cpheight = ytransX - margin.top;
