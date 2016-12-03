@@ -31,6 +31,7 @@
 		margin = {left: 20, right:20, top: 20, bottom:20},
 		stacked = false,
 		rotateTicks = false,
+		ylabelsleftaligned = false,
 		itemHeight = 60,
 		itemMargin = 5,
 		navMargin = 60,
@@ -280,6 +281,12 @@
 				gyAxis.transition().duration(axisDelay)
 					.delay(axisDelay)
 					.attr("transform", "translate(" + xtransY + ',' + 0 + ")");
+				if (ylabelsleftaligned){
+					gyAxis.selectAll(".tick text")
+						.attr("dx", 5 - gyabb.width)	// Place 5 pixel away from left edge of axis box
+						.style("text-anchor","start") // Left aligned
+						;
+				}
 
 				cpwidth = width - margin.right - xtransY;
 				cpheight = ytransX - margin.top;
@@ -626,6 +633,11 @@
 		gantt.rotateTicks = function (degrees) {
 			if (!arguments.length) return rotateTicks;
 			rotateTicks = degrees;
+			return gantt;
+		};
+
+		gantt.ylabelsleftaligned = function () {
+			ylabelsleftaligned = !ylabelsleftaligned;
 			return gantt;
 		};
 
