@@ -287,6 +287,15 @@
 						.style("text-anchor","start") // Left aligned
 						;
 				}
+				gyAxis.selectAll(".tick text")
+					.data(data)
+					.attr("class", function(d){
+						if (d.class == null)
+							return "ylabel_default";
+						else
+							return "ylabel_"+d.class;
+					})
+					;
 
 				cpwidth = width - margin.right - xtransY;
 				cpheight = ytransX - margin.top;
