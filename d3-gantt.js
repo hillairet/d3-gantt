@@ -364,6 +364,7 @@
 				////////////////////////////////////
 				// Extract rect data
 				var rectdata = [];
+				var textdata = [];
 				data.forEach(function (entry, i) {
 					entry.times.forEach(function (time, j) {
 						if (time.display == "circle" || 
@@ -376,9 +377,16 @@
 										- xAxis.scale()(time.starting_time);
 							rect.id = entry.label;
 							rect.color = color_selector(entry, rectdata.length);
-							rect.text = time.label;
 
 							rectdata.push(rect);
+
+							if (time.label !== undefined && time.label !== ""){
+								var text ={};
+								text.x = rect.x;
+								text.id = rect.id;
+								text.text = time.label;
+								textdata.push(text);
+							}
 						}
 					});
 					if (entry.subentries !== undefined){
@@ -393,13 +401,17 @@
 									rect.width = xAxis.scale()(subtime.ending_time)
 												- xAxis.scale()(subtime.starting_time);
 									rect.color = color_selector(subentry, rectdata.length);
-									rect.text = subtime.label;
 
 									show = true;
 									if (entry.show_split !== undefined)
 										show = entry.show_split;
 									if (show){
 										rect.id = subentry.label;
+										var text ={};
+										text.x = rect.x;
+										text.id = rect.id;
+										text.text = subtime.label;
+										textdata.push(text);
 									} else {
 										rect.id = entry.label;
 									}
@@ -413,9 +425,9 @@
 				////////////////////////////////////
 				// Draw the bar chart
 				var bars = chart.selectAll("rect.bar")
-					.data(rectdata)
+					.data(rectdata);
 				var texts = chart.selectAll("text.bar-text")
-					.data(rectdata)
+					.data(textdata, function(d){return d.id;});
 
 				//update
 				bars.style("fill", function(d,i){return d.color;});
@@ -444,17 +456,17 @@
 
 				//exit 
 				bars.exit()
-				.transition()
-				.duration(axisDelay)
-				.ease("exp")
+					.transition()
+					.duration(axisDelay)
+					.ease("exp")
 					.attr("width", 0)
 					.remove();
 
 				texts.exit()
-				.transition()
-				.duration(axisDelay)
-				.ease("exp")
-					.attr("width", 0)
+					.transition()
+					.duration(axisDelay)
+					.ease("exp")
+					.style("fill-opacity", 1e-6)
 					.remove();
 
 
