@@ -280,6 +280,14 @@
 			}
 
 			if(!init){
+				// Align text right before calculating various widths.
+				// This is important to make the chart properly responsive.
+				if (ylabelsleftaligned){
+					gyAxis.selectAll(".tick text")
+						.attr("dx", 0)	// Place 5 pixel away from left edge of axis box
+						.style("text-anchor","end") // Left aligned
+						;
+				}
 				// Update the axes to their correct position
 				var gyabb = gyAxis.node().getBBox();
 				yScale = make_yscale(labels,gyabb.height);
@@ -452,7 +460,7 @@
 
 				bars.attr("stroke-width", 4)
 					.transition()
-					.delay(500)
+					.delay(axisDelay)
 					.duration(axisDelay)
 					.ease("quad")
 					.attr("width", function(d,i){ return d.width; })
@@ -462,7 +470,7 @@
 					});
 
 				texts.transition()
-					.delay(500)
+					.delay(axisDelay)
 					.duration(axisDelay)
 					.ease("quad")
 					.attr("fill-opacity", 1.0)
