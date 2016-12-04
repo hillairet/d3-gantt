@@ -51,7 +51,8 @@
 		;
 
 		////////////// Selection variables ///////////////
-		var svg,
+		var gParent,
+		svg,
 		xAxis,
 		gxAxis,
 		yAxis,
@@ -62,7 +63,8 @@
 		clipchart,
 		todayLine,
 		legend,
-		legend_items;
+		legend_items,
+		current_data;
 
 		function find_xrange(data){
 			// figure out beginning and ending times if they are unspecified
@@ -127,8 +129,10 @@
 		}
 
 		///////////////////////////////////////////////////////////////////
-		gantt.draw = function(data, init = false){
-			svgbb = svg.node().getBBox();
+		gantt.draw = function(data = current_data, init = false){
+			current_data = data;
+			width = gParent.node().clientWidth;
+			height = gParent.node().clientHeight;
 
 			var flatdata = [];
 			var labels = [];
@@ -353,7 +357,6 @@
 				// Extract rect data
 				var rectdata = [];
 				data.forEach(function (entry, i) {
-						console.log(entry.label)
 					entry.times.forEach(function (time, j) {
 						if (time.display == "circle" || 
 							time.ending_time === undefined || time.starting_time === undefined){
@@ -372,7 +375,6 @@
 					});
 					if (entry.subentries !== undefined){
 						entry.subentries.forEach(function(subentry,k){
-							console.log(subentry.label)
 							subentry.times.forEach(function (subtime, l) {
 								if (subtime.display == "circle" || 
 									subtime.ending_time === undefined || subtime.starting_time === undefined){
@@ -568,8 +570,9 @@
 
 		}
 
-		function gantt(gParent)
+		function gantt(Parent)
 		{
+			gParent = Parent;
 			//setup the svg
 			svg = gParent.append("svg")
 				.attr("width", "100%")
@@ -579,10 +582,6 @@
 				.attr("height", "100%")
 				.attr("stroke", "none")
 				.attr("fill", "none");
-
-			svgbb = svg.node().getBBox();
-			width = svgbb.width;
-			height = svgbb.height;
 
 			// Create xaxis group
 			// Create yaxis group
