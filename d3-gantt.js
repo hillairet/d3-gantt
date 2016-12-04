@@ -58,7 +58,8 @@
 		gyAxis,
 		chart,
 		chartdeco,
-		clipper,
+		clipalongy,
+		clipchart,
 		todayLine,
 		legend,
 		legend_items;
@@ -132,16 +133,29 @@
 			var flatdata = [];
 			var labels = [];
 			data.forEach(function(entry,i){
-				labels.push(entry.label);
+				// Little trick to avoid duplicates
+				this_label = entry.label;
+				while ( labels.indexOf(this_label) != -1){
+					this_label = this_label + ' ';
+				}
+				entry.label = this_label;
+				labels.push(this_label);
 				flatdata.push(entry);
 				show = true;
 				if (entry.show_split !== undefined)
 					show = entry.show_split;
 				if (entry.subentries !== undefined){
 					entry.subentries.forEach(function(subentry,j){
+						if (show){
+							// Little trick to avoid duplicates
+							this_label = subentry.label;
+							while ( labels.indexOf(this_label) != -1){
+								this_label = this_label + ' ';
+							}
+							subentry.label = this_label;
+							labels.push(this_label);
+						}
 						flatdata.push(subentry);
-						if (show)
-							labels.push(subentry.label);
 					});
 				}
 			});
@@ -177,7 +191,7 @@
 					.orient("left")
 					.tickSize(2);
 				gyAxis = svg.append("g")
-					.attr("clip-path","url(#clip-chart)")
+					.attr("clip-path","url(#clip-alongy)")
 					.append('g')
 					.attr("class", "yaxis")
 					.attr("transform", "translate(" + (-10) + "," + 0 + ")")
@@ -188,9 +202,16 @@
 				chart = svg.append("g")
 					.attr("class","chart")
 					.attr("clip-path","url(#clip-chart)");
-				clipper = svg.append("clipPath")
+
+				clipchart = svg.append("clipPath")
 					.attr("id","clip-chart");
-				clipper.append("rect")
+				clipchart.append("rect")
+					.attr("width",width)
+					.attr("height",height);
+
+				clipalongy = svg.append("clipPath")
+					.attr("id","clip-alongy");
+				clipalongy.append("rect")
 					.attr("width",width)
 					.attr("height",height);
 
@@ -314,7 +335,15 @@
 
 				cpwidth = width - margin.right - xtransY;
 				cpheight = ytransX - margin.top;
-				clipper.select("rect")
+
+				clipchart.select("rect")
+					.attr("height",cpheight)
+					.attr("width", cpwidth)
+					.attr("transform", "translate(" + xtransY + ',' + 0 + ")")
+					.attr("x",0)
+					.attr("y",margin.top);
+
+				clipalongy.select("rect")
 					.attr("height",cpheight)
 					.attr("width", width)
 					.attr("x",0)
@@ -437,7 +466,8 @@
 					.attr("fill-opacity", 1.0)
 					.attr("y", yAxis.scale().rangeBand()/2)
 					.attr("transform", function(d,i) {
-						return "translate(" + d.x +','+ yAxis.scale()(d.id) + ")"
+						var this_x = Math.max(xAxis.scale()(beginning), d.x);
+						return "translate(" + this_x +','+ yAxis.scale()(d.id) + ")"
 					});
 
 				////////////////////////////////////
@@ -446,7 +476,7 @@
 					var deltaY = 0.0;
 					var yStart = d3.transform(gyAxis.attr("transform")).translate[1];
 					var fullHeight = gyAxis.node().getBBox().height;
-					var visibleHeight = clipper.node().getBBox().height;
+					var visibleHeight = clipalongy.node().getBBox().height;
 					// scroll(yScale(y), yScale);
 					if (d3.event.sourceEvent.type === "wheel") {
 						// use the `d3.event.sourceEvent.deltaY` value to translate
