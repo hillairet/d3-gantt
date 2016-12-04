@@ -158,8 +158,8 @@
 							}
 							subentry.label = this_label;
 							labels.push(this_label);
+							flatdata.push(subentry);
 						}
-						flatdata.push(subentry);
 					});
 				}
 			});
