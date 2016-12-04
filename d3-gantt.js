@@ -596,6 +596,8 @@
 			// Draw everything
 			gantt.draw(data);
 
+			d3.select(window).on('resize', gantt.draw); 
+
 		}
 		// SETTINGS
 
